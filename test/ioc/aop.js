@@ -8,7 +8,7 @@ var ioc = {
 	 */
 	myMongoDao : {
 		type : "org.nutz.mongo.util.MyMongoDao",
-		args : [ { refer : 'connector' }, { java : '$conf.getDB("db-name")' } ] },
+		args : [ { refer : 'connector' }, { java : '$conf.get("db-name")' } ] },
 	/*
 	 * 设置一个拦截器
 	 */
