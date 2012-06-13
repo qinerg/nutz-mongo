@@ -415,7 +415,7 @@ public class MongoDao {
 	 * @param mcur
 	 *            对游标的排序等方式的修改
 	 */
-	public <T> void each(Each<T> callback, Class<T> type, Object q, MCur mcur) {
+	public <T> void each(Each<? extends T> callback, Class<? extends T> type, Object q, MCur mcur) {
 		each(callback, type, q, null, mcur);
 	}
 
@@ -434,7 +434,11 @@ public class MongoDao {
 	 * @param mcur
 	 *            对游标的排序等方式的修改
 	 */
-	public <T> void each(Each<T> callback, Class<T> type, Object q, MKeys keys, MCur mcur) {
+	public <T> void each(	Each<? extends T> callback,
+							Class<? extends T> type,
+							Object q,
+							MKeys keys,
+							MCur mcur) {
 		MongoEntity moe = Mongos.entity(type);
 		_each(callback, moe.getCollectionName(q), moe, q, keys, mcur);
 	}
