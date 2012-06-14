@@ -541,6 +541,25 @@ public class MongoDao {
 	}
 
 	/**
+	 * 根据条件，计算一组对象的数量
+	 * 
+	 * @param collName
+	 *            集合名称
+	 * @param q
+	 *            条件，为 null 表示整个集合
+	 * @return 数量
+	 */
+	public long count(String collName, Object q) {
+		MongoEntity moe = Mongos.entity(q);
+		if (db.collectionExists(collName)) {
+			DBCollection coll = db.getCollection(collName);
+			DBObject dbq = moe.formatObject(q);
+			return null == q ? coll.count() : coll.count(dbq);
+		}
+		return -1;
+	}
+
+	/**
 	 * 计算一个字段数值的和
 	 * 
 	 * @param enref
