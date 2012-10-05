@@ -18,6 +18,19 @@ import org.nutz.mongo.Mongos;
 public class Moo extends MoChain {
 
 	/**
+	 * 提供 $exists 修饰符
+	 * 
+	 * @param field
+	 *            字段名
+	 * @param exists
+	 *            是否存在该字段
+	 * @return
+	 */
+	public Moo exists(String field, boolean exists) {
+		return append(field, Mongos.dbo("$exists", exists));
+	}
+
+	/**
 	 * 提供 $not 修改符
 	 * 
 	 * @param q
@@ -574,6 +587,19 @@ public class Moo extends MoChain {
 	 */
 	public static Moo OR(Moo... qs) {
 		return NEW().or(qs);
+	}
+
+	/**
+	 * 创建链表，同时增加一个 $exists 节点
+	 * 
+	 * @param field
+	 *            字段名
+	 * @param exists
+	 *            是否存在该字段
+	 * @return 链表对象
+	 */
+	public static Moo EXISTS(String field, boolean exists) {
+		return NEW().exists(field, exists);
 	}
 
 	/**
