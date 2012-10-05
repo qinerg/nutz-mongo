@@ -53,6 +53,58 @@ public class Moo extends MoChain {
 	}
 
 	/**
+	 * 判断一个字符串字段是否大于等于给定值
+	 * 
+	 * @param field
+	 *            字段
+	 * @param str
+	 *            字符串
+	 * @return 新节点
+	 */
+	public Moo str_gte(String field, CharSequence str) {
+		return append(field, Mongos.dbo("$gte", str));
+	}
+
+	/**
+	 * 判断一个字符串字段是否大于给定值
+	 * 
+	 * @param field
+	 *            字段
+	 * @param str
+	 *            字符串
+	 * @return 新节点
+	 */
+	public Moo str_gt(String field, CharSequence str) {
+		return append(field, Mongos.dbo("$gt", str));
+	}
+
+	/**
+	 * 判断一个字符串字段是否小于等于给定值
+	 * 
+	 * @param field
+	 *            字段
+	 * @param str
+	 *            字符串
+	 * @return 新节点
+	 */
+	public Moo str_lte(String field, CharSequence str) {
+		return append(field, Mongos.dbo("$lte", str));
+	}
+
+	/**
+	 * 判断一个字符串字段是否小于给定值
+	 * 
+	 * @param field
+	 *            字段
+	 * @param str
+	 *            字符串
+	 * @return 新节点
+	 */
+	public Moo str_lt(String field, CharSequence str) {
+		return append(field, Mongos.dbo("$lt", str));
+	}
+
+	/**
 	 * 判断一个日期字段是否大于等于给定值
 	 * 
 	 * @param field

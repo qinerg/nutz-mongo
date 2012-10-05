@@ -15,7 +15,7 @@ public class SafeMooMethodInterceptorTest {
 
 	@Test(expected=MongoException.class)
 	public void test_filter() {
-		Ioc ioc = new NutIoc(new JsonLoader("org/nutz/mongo/util/meta/aop.js","ioc"));
+		Ioc ioc = new NutIoc(new JsonLoader("org/nutz/mongo/util/meta/aop.js","ioc_mongo"));
 		MongoDao dao = ioc.get(MyMongoDao.class);
 		dao.create(Pet.class, true);
 		dao.save(Pet.AGE("XiaoBai", 10, 3));
