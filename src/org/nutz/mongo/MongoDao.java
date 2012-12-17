@@ -54,15 +54,12 @@ public class MongoDao {
         MongoEntity moe = Mongos.entity(type);
         // 获得集合
         String collName = moe.getCollectionName(q);
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            // 将 ref 对象转换成 DBObject
-            DBObject dbRef = moe.formatObject(q);
+        DBCollection coll = db.getCollection(collName);
+        // 将 ref 对象转换成 DBObject
+        DBObject dbRef = moe.formatObject(q);
 
-            // 执行删除
-            return coll.remove(dbRef);
-        }
-        return null;
+        // 执行删除
+        return coll.remove(dbRef);
     }
 
     /**
@@ -96,11 +93,8 @@ public class MongoDao {
      * @return 修改结果
      */
     public WriteResult removeById(String collName, String id) {
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            return coll.remove(Mongos.dboId(id));
-        }
-        return null;
+        DBCollection coll = db.getCollection(collName);
+        return coll.remove(Mongos.dboId(id));
     }
 
     /**
@@ -130,17 +124,12 @@ public class MongoDao {
      * @return
      */
     public <T extends Object> T save(T obj, String collName) {
-        if (db.collectionExists(collName)) {
-            MongoEntity moe = Mongos.entity(obj);
-            moe.fillIdIfNoexits(obj);
-            DBObject dbo = moe.toDBObject(obj);
-            DBCollection coll = db.getCollection(collName);
-            coll.save(dbo);
-            return obj;
-        } else {
-            // TODO 为么不建立个集合然后插入来？？？
-        }
-        return null;
+        MongoEntity moe = Mongos.entity(obj);
+        moe.fillIdIfNoexits(obj);
+        DBObject dbo = moe.toDBObject(obj);
+        DBCollection coll = db.getCollection(collName);
+        coll.save(dbo);
+        return obj;
     }
 
     /**
@@ -157,13 +146,10 @@ public class MongoDao {
     public WriteResult update(Object enref, Object q, Object o) {
         MongoEntity moe = (MongoEntity) Mongos.entity(enref);
         String collName = moe.getCollectionName(q);
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            DBObject dbq = moe.formatObject(q);
-            DBObject dbo = moe.formatObject(o);
-            return coll.updateMulti(dbq, dbo);
-        }
-        return null;
+        DBCollection coll = db.getCollection(collName);
+        DBObject dbq = moe.formatObject(q);
+        DBObject dbo = moe.formatObject(o);
+        return coll.updateMulti(dbq, dbo);
     }
 
     /**
@@ -178,13 +164,10 @@ public class MongoDao {
      * @return 修改结果
      */
     public WriteResult updateBy(String collName, Object q, Object o) {
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            DBObject dbq = Mongos.obj2dbo(q);
-            DBObject dbo = Mongos.obj2dbo(o);
-            return coll.updateMulti(dbq, dbo);
-        }
-        return null;
+        DBCollection coll = db.getCollection(collName);
+        DBObject dbq = Mongos.obj2dbo(q);
+        DBObject dbo = Mongos.obj2dbo(o);
+        return coll.updateMulti(dbq, dbo);
     }
 
     /**
@@ -501,15 +484,12 @@ public class MongoDao {
         MongoEntity moe = Mongos.entity(type);
         // 获得集合
         String collName = moe.getCollectionName(q);
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            // 将 ref 对象转换成 DBObject
-            DBObject dbRef = moe.formatObject(q);
-            DBObject dbo = null == dbRef ? coll.findOne() : coll.findOne(dbRef);
-            // 执行转换
-            return (T) moe.toObject(dbo);
-        }
-        return null;
+        DBCollection coll = db.getCollection(collName);
+        // 将 ref 对象转换成 DBObject
+        DBObject dbRef = moe.formatObject(q);
+        DBObject dbo = null == dbRef ? coll.findOne() : coll.findOne(dbRef);
+        // 执行转换
+        return (T) moe.toObject(dbo);
     }
 
     /**
@@ -538,12 +518,9 @@ public class MongoDao {
     public long count(Object enref, Object q) {
         MongoEntity moe = Mongos.entity(enref);
         String collName = moe.getCollectionName(q);
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            DBObject dbq = moe.formatObject(q);
-            return null == q ? coll.count() : coll.count(dbq);
-        }
-        return -1;
+        DBCollection coll = db.getCollection(collName);
+        DBObject dbq = moe.formatObject(q);
+        return null == q ? coll.count() : coll.count(dbq);
     }
 
     /**
@@ -557,12 +534,9 @@ public class MongoDao {
      */
     public long count(String collName, Object q) {
         MongoEntity moe = Mongos.entity(q);
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            DBObject dbq = moe.formatObject(q);
-            return null == q ? coll.count() : coll.count(dbq);
-        }
-        return -1;
+        DBCollection coll = db.getCollection(collName);
+        DBObject dbq = moe.formatObject(q);
+        return null == q ? coll.count() : coll.count(dbq);
     }
 
     /**
@@ -580,25 +554,23 @@ public class MongoDao {
         MongoEntity moe = Mongos.entity(enref);
         String fieldName = moe.getFieldDbName(field);
         String collName = moe.getCollectionName(q);
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            DBObject dbq = moe.formatObject(q);
+        DBCollection coll = db.getCollection(collName);
+        DBObject dbq = moe.formatObject(q);
 
-            String reduce = "function(obj,prev){prev.csum+=obj." + fieldName + ";}";
+        String reduce = "function(obj,prev){prev.csum+=obj." + fieldName + ";}";
 
-            GroupCommand gcmd = new GroupCommand(coll,
-                                                 Mongos.dbo(),
-                                                 dbq,
-                                                 Mongos.dbo("csum", 0),
-                                                 reduce,
-                                                 null);
-            DBObject re = coll.group(gcmd);
-            if (re instanceof BasicDBList) {
-                BasicDBList lst = (BasicDBList) re;
-                if (lst.size() > 0) {
-                    Double csum = (Double) ((DBObject) lst.get(0)).get("csum");
-                    return csum.longValue();
-                }
+        GroupCommand gcmd = new GroupCommand(coll,
+                                             Mongos.dbo(),
+                                             dbq,
+                                             Mongos.dbo("csum", 0),
+                                             reduce,
+                                             null);
+        DBObject re = coll.group(gcmd);
+        if (re instanceof BasicDBList) {
+            BasicDBList lst = (BasicDBList) re;
+            if (lst.size() > 0) {
+                Double csum = (Double) ((DBObject) lst.get(0)).get("csum");
+                return csum.longValue();
             }
         }
         return -1;
@@ -798,17 +770,13 @@ public class MongoDao {
      * @return 匹配的对象
      */
     private Object findAndRemove(String collName, MongoEntity moe, Object q) {
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
+        DBCollection coll = db.getCollection(collName);
 
-            // 转换...
-            DBObject query = moe.formatObject(q);
+        // 转换...
+        DBObject query = moe.formatObject(q);
+        DBObject dbo = coll.findAndRemove(query);
 
-            DBObject dbo = coll.findAndRemove(query);
-
-            return moe.toObject(dbo);
-        }
-        return null;
+        return moe.toObject(dbo);
     }
 
     /**
@@ -827,19 +795,16 @@ public class MongoDao {
      * @return 匹配的对象
      */
     private Object findAndModify(String collName, MongoEntity moe, Object q, MCur mcur, Object o) {
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
+        DBCollection coll = db.getCollection(collName);
 
-            // 转换...
-            DBObject query = moe.formatObject(q);
-            DBObject update = moe.formatObject(o);
-            DBObject sort = null == mcur ? Mongos.dbo() : moe.formatObject(mcur.toMap());
+        // 转换...
+        DBObject query = moe.formatObject(q);
+        DBObject update = moe.formatObject(o);
+        DBObject sort = null == mcur ? Mongos.dbo() : moe.formatObject(mcur.toMap());
 
-            DBObject dbo = coll.findAndModify(query, sort, update);
+        DBObject dbo = coll.findAndModify(query, sort, update);
 
-            return moe.toObject(dbo);
-        }
-        return null;
+        return moe.toObject(dbo);
     }
 
     /**
@@ -866,48 +831,46 @@ public class MongoDao {
                            Object q,
                            MKeys keys,
                            MCur mcur) {
-        if (db.collectionExists(collName)) {
-            DBCollection coll = db.getCollection(collName);
-            // 将 ref 对象转换成 DBObject
-            DBObject dbQ = moe.formatObject(q);
+        DBCollection coll = db.getCollection(collName);
+        // 将 ref 对象转换成 DBObject
+        DBObject dbQ = moe.formatObject(q);
 
-            if (log.isDebugEnabled())
-                log.debugf("db.%s.find(%s);",
-                           collName,
-                           Json.toJson(dbQ, JsonFormat.compact().setQuoteName(false)));
+        if (log.isDebugEnabled())
+            log.debugf("db.%s.find(%s);",
+                       collName,
+                       Json.toJson(dbQ, JsonFormat.compact().setQuoteName(false)));
 
-            // 将 keys 对象转换成 DBObject
-            DBObject dbKeys = moe.formatObject(keys);
+        // 将 keys 对象转换成 DBObject
+        DBObject dbKeys = moe.formatObject(keys);
 
-            // 执行查询
-            DBCursor cur = null;
-            if (dbQ == null) {
-                cur = (null == dbKeys ? coll.find() : coll.find(Mongos.dbo(), dbKeys));
-            } else {
-                cur = (null == dbKeys ? coll.find(dbQ) : coll.find(dbQ, dbKeys));
-            }
+        // 执行查询
+        DBCursor cur = null;
+        if (dbQ == null) {
+            cur = (null == dbKeys ? coll.find() : coll.find(Mongos.dbo(), dbKeys));
+        } else {
+            cur = (null == dbKeys ? coll.find(dbQ) : coll.find(dbQ, dbKeys));
+        }
 
-            // 设置排序条件
-            if (null != mcur) {
-                mcur.setupCursor(cur, moe);
-            }
+        // 设置排序条件
+        if (null != mcur) {
+            mcur.setupCursor(cur, moe);
+        }
 
-            // 遍历游标
-            try {
-                int index = 0;
-                while (cur.hasNext()) {
-                    DBObject dbo = cur.next();
-                    T obj = (T) moe.toObject(dbo);
-                    try {
-                        callback.invoke(index++, obj, -1);
-                    }
-                    catch (ContinueLoop e) {}
+        // 遍历游标
+        try {
+            int index = 0;
+            while (cur.hasNext()) {
+                DBObject dbo = cur.next();
+                T obj = (T) moe.toObject(dbo);
+                try {
+                    callback.invoke(index++, obj, -1);
                 }
+                catch (ContinueLoop e) {}
             }
-            catch (ExitLoop e) {}
-            catch (LoopException e) {
-                throw Lang.wrapThrow(e.getCause());
-            }
+        }
+        catch (ExitLoop e) {}
+        catch (LoopException e) {
+            throw Lang.wrapThrow(e.getCause());
         }
     }
 
